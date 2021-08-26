@@ -34,7 +34,7 @@ const AllFriends = (props) => {
 	}, []);
 
 	return (
-		<FlipMove>
+		<>
 			{unVerifiedFriends?.map((doc, index) => (
 				<SideBarOption
 					collectionName={doc?.collectionName}
@@ -48,7 +48,7 @@ const AllFriends = (props) => {
 					date={doc?.timestamp}
 				/>
 			))}
-		</FlipMove>
+		</>
 	);
 };
 

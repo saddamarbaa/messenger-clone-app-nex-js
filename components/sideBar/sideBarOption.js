@@ -14,7 +14,7 @@ import {
 } from "../../features/currentChattingUser/currentChattingUserSlice";
 import React, { useEffect, useState } from "react";
 
-const SideBarOption = React.forwardRef((props, ref) => {
+const SideBarOption = (props, ref) => {
 	const {
 		userId,
 		name,
@@ -136,7 +136,7 @@ const SideBarOption = React.forwardRef((props, ref) => {
 			)}
 		</SideBarOptionWrapper>
 	);
-});
+};
 
 export default SideBarOption;
 
