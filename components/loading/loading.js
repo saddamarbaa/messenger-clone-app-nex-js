@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Circle } from "better-react-spinkit";
+import Image from "next/image";
 
 const Loading = () => {
 	return (
@@ -24,18 +25,25 @@ const Loading = () => {
 					display: "grid",
 					placeItems: "center",
 				}}>
-				<div style={{ marginBottom: "3rem" }}>
-					<img
+				<div
+					className='logo'
+					style={{
+						position: "relative",
+						cursor: "pointer",
+						marginBottom: "3rem",
+						width: "8rem",
+						height: "8rem",
+						display: "block",
+					}}>
+					<Image
 						className='logo-img'
 						src='/images/messenger-logo.svg'
 						alt='Picture of the messenger'
-						style={{
-							width: "8rem",
-							height: "8rem",
-							display: "block",
-						}}
+						layout='fill'
+						objectFit='contain'
 					/>
 				</div>
+
 				<div>
 					<Circle color='#006aff' size={60} />
 				</div>
