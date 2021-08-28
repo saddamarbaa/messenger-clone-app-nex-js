@@ -161,18 +161,15 @@ Build By Saddam Arbaa Project inspired by [https://www.messenger.com]
 
 # Screenshots
 
-##  Responsive on large screens - Home Page 
+##  Responsive on large screens 
 
-![image](https://user-images.githubusercontent.com/51326421/130917825-97c531cc-780a-4429-8695-25f05dfdb8da.png)
-
+![image](https://user-images.githubusercontent.com/51326421/131225688-807b82e7-e781-4bb4-b9dd-f8d662178417.png)
 
 
 
 
 ## Responsive on mobile and tablet screens 
 ![image](https://user-images.githubusercontent.com/51326421/130917897-00b06248-02aa-40d3-8b21-1816edbe2ec6.png)
-
-
 
 
 
