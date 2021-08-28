@@ -7,8 +7,8 @@ import SideBar from "../sideBar/sideBar";
 const SingleMessage = (props) => {
 	return (
 		<SingleMessagePageWrapper>
-			<SideBar />
-			<Feeds messageId={props?.messageId} />
+			<SideBar unVerifiedFriends={props?.unVerifiedFriends} />
+			<Feeds chatsInDb={props?.chatsInDb} chatRoomId={props?.chatRoomId} />
 		</SingleMessagePageWrapper>
 	);
 };

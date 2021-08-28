@@ -35,19 +35,21 @@ const AllFriends = (props) => {
 
 	return (
 		<>
-			{unVerifiedFriends?.map((doc, index) => (
-				<SideBarOption
-					collectionName={doc?.collectionName}
-					key={doc?.id}
-					userId={doc?.id}
-					name={doc?.name}
-					email={doc?.email}
-					photoURL={doc?.photoURL}
-					lastSeen={doc?.lastSeen}
-					call={index === 1 || index === 3 || index === 5 ? "call" : ""}
-					date={doc?.timestamp}
-				/>
-			))}
+			<FlipMove>
+				{unVerifiedFriends?.map((doc, index) => (
+					<SideBarOption
+						collectionName={doc?.collectionName}
+						key={doc?.id}
+						userId={doc?.id}
+						name={doc?.name}
+						email={doc?.email}
+						photoURL={doc?.photoURL}
+						lastSeen={doc?.lastSeen}
+						call={index === 1 || index === 3 || index === 5 ? "call" : ""}
+						date={doc?.timestamp}
+					/>
+				))}
+			</FlipMove>
 		</>
 	);
 };

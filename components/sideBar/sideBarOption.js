@@ -13,8 +13,10 @@ import {
 	selectCurrentChattingUser,
 } from "../../features/currentChattingUser/currentChattingUserSlice";
 import React, { useEffect, useState } from "react";
+import { truncate } from "../../lib/api-util";
+import { getRandomNumber } from "../../lib/api-util";
 
-const SideBarOption = (props, ref) => {
+const SideBarOption = React.forwardRef((props, ref) => {
 	const {
 		userId,
 		name,
@@ -70,17 +72,6 @@ const SideBarOption = (props, ref) => {
 		}
 	};
 
-	const getRandomNumber = () => {
-		const rndInt = Math.floor(Math.random() * 10) + 1;
-		return rndInt;
-	};
-
-	//  function to truncate(cut) the string if the length of given string
-	//   bigger than  given number(n)
-	const truncate = (string, n) => {
-		return string?.length > n ? string.substr(0, n - 1) + " ...." : string;
-	};
-
 	return (
 		<SideBarOptionWrapper
 			onClick={showMessagesHandler}
@@ -102,11 +93,16 @@ const SideBarOption = (props, ref) => {
 								fontSize: "0.9rem",
 								display: "flex",
 								alignItems: "center",
+								fontWeight: "bold",
 							}}>
 							<CallIcon
-								style={{ fontSize: "1rem", marginRight: "4px" }}
-							/>{" "}
-							missed call ({getRandomNumber()})
+								style={{
+									fontSize: "1rem",
+									marginRight: "4px",
+									color: "#DC001A",
+								}}
+							/>
+							You missed a call ({getRandomNumber()})
 						</p>
 					</div>
 				)}
@@ -136,8 +132,9 @@ const SideBarOption = (props, ref) => {
 			)}
 		</SideBarOptionWrapper>
 	);
-};
+});
 
+SideBarOption.displayName = "SideBarOption";
 export default SideBarOption;
 
 const SideBarOptionWrapper = styled.div`

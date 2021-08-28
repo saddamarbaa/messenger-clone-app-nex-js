@@ -19,19 +19,16 @@ import db, { auth } from "../../config/firebase";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { selectCurrentChattingUser } from "../../features/currentChattingUser/currentChattingUserSlice";
 import { selectUser } from "../../features/user/userSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import TimeAgo from "react-timeago";
 import { useAuthState } from "react-firebase-hooks/auth";
+import FlipMove from "react-flip-move";
 
 const Feeds = (props) => {
-	const currentChattingUser = useSelector(selectCurrentChattingUser);
-
-	const messageRef = useRef(null);
-	const autoScrollToBottomRef = useRef(null);
-	const [user] = useAuthState(auth);
+	const [chatInDB, setChatInDB] = useState(props?.chatsInDb);
 
 	// point to messages collection inside user collection
-	const [messagesInDb, loading, error] = useCollection(
+	const [chatInDbByUseCollection, loading, error] = useCollection(
 		db
 			?.collection("unVerifiedUsers")
 			?.doc(props?.messageId)
@@ -40,18 +37,56 @@ const Feeds = (props) => {
 			?.limit(100),
 	);
 
+	const currentChattingUser = useSelector(selectCurrentChattingUser);
+	const messageRef = useRef(null);
+	const autoScrollToBottomRef = useRef(null);
+	const [user] = useAuthState(auth);
+
 	useEffect(() => {
-		// Auto Scroll functionality
-		autoScrollToBottomRef?.current?.scrollIntoView({
-			behavior: "smooth",
-		});
-	}, [loading, props?.messageId]);
+		if (!props?.chatRoomId) {
+			return;
+		}
+
+		const unsubscribe = db
+			?.collection("unVerifiedUsers")
+			?.doc(props?.chatRoomId)
+			?.collection("messages")
+			?.orderBy("timestamp", "asc")
+			?.limit(100)
+			?.onSnapshot((snapshot) => {
+				setChatInDB(
+					snapshot?.docs?.map((doc) => {
+						return {
+							id: doc.id,
+							...doc.data(),
+							timestamp: doc?.data()?.timestamp?.toDate()?.getTime(),
+						};
+					}),
+				);
+			});
+
+		return () => {
+			unsubscribe();
+		};
+	}, [props?.chatRoomId]);
+
+	// Auto Scroll functionality
+	useEffect(
+		() => {
+			// Auto Scroll functionality
+			autoScrollToBottomRef?.current?.scrollIntoView({
+				behavior: "smooth",
+			});
+		},
+		[props?.chatRoomId],
+		loading,
+	);
 
 	const sendMessageHandler = (event) => {
 		event.preventDefault();
-		if (props?.messageId) {
+		if (props?.chatRoomId) {
 			db?.collection("unVerifiedUsers")
-				?.doc(props?.messageId)
+				?.doc(props?.chatRoomId)
 				?.collection("messages")
 				?.add({
 					message: messageRef?.current?.value,
@@ -93,7 +128,7 @@ const Feeds = (props) => {
 						<h4 className='hid-s'>{currentChattingUser?.name}</h4>
 						{currentChattingUser?.date && (
 							<span>
-								Last active at:
+								Last active:{" "}
 								<TimeAgo date={currentChattingUser?.date} />
 							</span>
 						)}
@@ -116,24 +151,23 @@ const Feeds = (props) => {
 				/>
 			</FeedsLogo>
 			<FeedsChatBody>
-				{/* Loop through all the messages  */}
-				{messagesInDb?.docs?.map((doc) => {
-					const { message, name, photoURL, timestamp } = doc?.data();
-					return (
+				<FlipMove>
+					{/* Loop through all the messages  */}
+					{chatInDB?.map((doc, index) => (
 						<Message
 							key={doc?.id}
-							message={message}
-							name={name}
-							photoURL={photoURL}
-							date={doc?.data()?.timestamp?.toDate()?.getTime()}
+							message={doc?.message}
+							name={doc?.name}
+							photoURL={doc?.photoURL}
+							date={doc?.timestamp}
 						/>
-					);
-				})}
+					))}
+				</FlipMove>
 
 				{/* Empty div for auto scroll */}
 				<div
 					ref={autoScrollToBottomRef}
-					style={{ paddingBottom: "50px" }}
+					style={{ paddingBottom: "100px" }}
 					className='auto-scroll'></div>
 			</FeedsChatBody>
 
@@ -144,14 +178,27 @@ const Feeds = (props) => {
 				<GifIcon className='icon hids' style={{ fontSize: "2.5rem" }} />
 				<form onSubmit={sendMessageHandler}>
 					<label htmlFor='message'></label>
-					<input
-						type='text'
-						id='message'
-						required
-						ref={messageRef}
-						placeholder='Aa'
-						disabled={!props?.messageId}
-					/>
+					{!props?.chatRoomId && (
+						<input
+							type='text'
+							id='message'
+							required
+							ref={messageRef}
+							placeholder={`Select friend to start chat`}
+							disabled={!props?.chatRoomId}
+						/>
+					)}
+					{props?.chatRoomId && (
+						<input
+							type='text'
+							id='message'
+							required
+							ref={messageRef}
+							placeholder={`Aa`}
+							disabled={!props?.chatRoomId}
+						/>
+					)}
+
 					<SentimentDissatisfiedIcon className='icon' />
 				</form>
 
@@ -269,14 +316,15 @@ const FeedsChatFooter = styled.div`
 	form {
 		flex-grow: 1;
 		display: flex;
-		border: 1px solid rgba(220, 227, 232, 0.5);
-		background-color: rgba(220, 227, 232, 0.5);
 		color: gray;
 		border-radius: 1.4rem;
 		align-items: center;
 		padding: 7px 8px;
 		cursor: pointer;
 		transition: 0.3s;
+		border: 1px solid rgba(220, 227, 232);
+		background-color: rgba(220, 227, 232);
+		box-shadow: 0 1px 0 rgb(255 255 255 / 50%), 0 1px 0 rgb(0 0 0 / 7%) inset;
 
 		@media (max-width: 768px) {
 			max-width: 90%;
@@ -284,8 +332,9 @@ const FeedsChatFooter = styled.div`
 
 		&:hover,
 		&:focus {
-			border: 1px solid rgba(220, 227, 232);
-			background-color: rgba(220, 227, 232);
+			border: 1px solid #e0d4fd;
+			background-color: #e0d4fd;
+			box-shadow: 0 1px 0 #e0d4fd, 0 1px 0 rgb(0 0 0 / 7%) inset;
 		}
 
 		input {

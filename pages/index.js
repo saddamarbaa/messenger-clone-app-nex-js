@@ -7,7 +7,6 @@ import { fragment } from "react";
 import { getVerifiedUsersInDb, getUnVerifiedUsersInDb } from "../lib/api-util";
 
 const HomePage = (props) => {
-
 	return (
 		<fragment>
 			<Head>

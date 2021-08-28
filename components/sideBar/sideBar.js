@@ -43,7 +43,6 @@ const SideBar = (props) => {
 		// Logic goes here
 	};
 
-	
 	return (
 		<SideBarWrapper>
 			<SideBarHeader>
@@ -100,6 +99,7 @@ export default SideBar;
 const SideBarWrapper = styled.div`
 	flex: 0.3;
 	max-width: 19rem;
+
 	min-height: 100vh;
 	max-height: 100vh;
 	background-color: #f8fbfe;
@@ -112,6 +112,10 @@ const SideBarWrapper = styled.div`
 		@media (max-width: 568px) {
 			display: none;
 		}
+	}
+
+	@media (min-width: 501px) {
+		min-width: 19rem;
 	}
 
 	@media (max-width: 500px) {
