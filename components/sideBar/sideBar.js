@@ -99,13 +99,11 @@ export default SideBar;
 const SideBarWrapper = styled.div`
 	flex: 0.3;
 	max-width: 19rem;
-
 	min-height: 100vh;
 	max-height: 100vh;
 	background-color: #f8fbfe;
-	/* border-right: 1px solid #e5e5e5; */
 	border-right: 1px solid white;
-	overflow-x: hidden !important;
+	overflow: hidden !important;
 
 	.hid-s,
 	h3 {
@@ -188,11 +186,14 @@ const SideBarInput = styled.div`
 `;
 
 const SideBarBottom = styled.div`
-	max-height: 50vh;
-	overflow-x: hidden !important;
-	overflow-y: auto !important;
+	max-height: 80vh;
+	overflow: hidden;
+
+	&:hover {
+		overflow-y: auto;
+	}
 
 	@media (max-width: 568px) {
-		overflow-y: hidden !important;
+		overflow-y: hidden;
 	}
 `;
